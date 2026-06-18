@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="电影购票 APP 产品设计与开发 Demo：基于课程团队项目整理的产品作品集网页。" />
+  <title>电影购票 APP 产品设计与开发 Demo｜产品作品集</title>
+
+  <!-- Tailwind CSS CDN：部署到 GitHub Pages / Vercel / Netlify 可直接运行 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#0f172a',
+            muted: '#64748b',
+            line: '#e2e8f0',
+            soft: '#f8fafc',
+            bluex: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              500: '#2563eb',
+              600: '#1d4ed8',
+              700: '#1e40af',
+              900: '#172554'
+            }
+          },
+          boxShadow: {
+            soft: '0 18px 45px rgba(15, 23, 42, 0.08)',
+            hover: '0 24px 60px rgba(37, 99, 235, 0.15)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      background:
+        radial-gradient(circle at 8% 4%, rgba(37, 99, 235, 0.10), transparent 30%),
+        radial-gradient(circle at 92% 10%, rgba(14, 165, 233, 0.10), transparent 28%),
+        linear-gradient(180deg, #f8fafc 0%, #ffffff 36%, #f8fafc 100%);
+      color: #0f172a;
+    }
+    .card {
+      border: 1px solid #e2e8f0;
+      background: rgba(255,255,255,.88);
+      backdrop-filter: blur(14px);
+      border-radius: 1.5rem;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+      transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(37, 99, 235, .38);
+      box-shadow: 0 24px 60px rgba(37, 99, 235, 0.12);
+    }
+    .section-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      color: #1d4ed8;
+      font-size: .875rem;
+      font-weight: 800;
+      letter-spacing: .02em;
+      margin-bottom: 1rem;
+    }
+    .section-kicker::before {
+      content: "";
+      width: 34px;
+      height: 4px;
+      border-radius: 999px;
+      background: #2563eb;
+      display: inline-block;
+    }
+    .phone-shell {
+      background: linear-gradient(180deg, #0f172a, #1e293b);
+      border-radius: 2.25rem;
+      padding: .75rem;
+      box-shadow: 0 30px 80px rgba(15, 23, 42, .30);
+    }
+    .phone-screen {
+      min-height: 560px;
+      border-radius: 1.75rem;
+      overflow: hidden;
+      background: #f8fafc;
+    }
+    .tab.active {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+      box-shadow: 0 12px 26px rgba(37, 99, 235, .25);
+    }
+    .flow-step.active {
+      background: #2563eb;
+      border-color: #2563eb;
+      color: white;
+      box-shadow: 0 14px 30px rgba(37, 99, 235, .22);
+    }
+    .module.active {
+      background: #eff6ff;
+      border-color: #2563eb;
+    }
+    .hide-scroll::-webkit-scrollbar { height: 8px; }
+    .hide-scroll::-webkit-scrollbar-thumb { background: #bfdbfe; border-radius: 999px; }
+    @media (max-width: 640px) {
+      .phone-screen { min-height: 500px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/82 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
+      <a href="#top" class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-bluex-600 text-white shadow-lg">🎬</div>
+        <div class="leading-tight">
+          <p class="text-sm font-black text-ink">Movie Ticketing APP</p>
+          <p class="text-xs text-muted">产品设计与开发 Demo</p>
+        </div>
+      </a>
+
+      <nav class="hidden items-center gap-6 text-sm font-semibold text-slate-600 lg:flex">
+        <a class="hover:text-bluex-600" href="#overview">概览</a>
+        <a class="hover:text-bluex-600" href="#needs">需求</a>
+        <a class="hover:text-bluex-600" href="#structure">结构</a>
+        <a class="hover:text-bluex-600" href="#flow">流程</a>
+        <a class="hover:text-bluex-600" href="#prototype">原型</a>
+        <a class="hover:text-bluex-600" href="#tech">技术</a>
+      </nav>
+
+      <a href="#prototype" class="hidden rounded-full bg-bluex-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-bluex-700 md:inline-flex">
+        查看原型
+      </a>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Banner -->
+    <section class="relative overflow-hidden px-5 py-16 md:py-24">
+      <div class="absolute -left-24 top-20 h-64 w-64 rounded-full bg-bluex-200/50 blur-3xl"></div>
+      <div class="absolute -right-24 top-4 h-80 w-80 rounded-full bg-sky-200/40 blur-3xl"></div>
+
+      <div class="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.08fr_.92fr]">
+        <div>
+          <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-bluex-100 bg-white px-4 py-2 text-sm font-bold text-bluex-700 shadow-sm">
+            <span class="h-2 w-2 rounded-full bg-bluex-600"></span>
+            课程团队项目整理 · 产品实习作品集
+          </div>
+
+          <h1 class="text-4xl font-black leading-tight tracking-tight text-ink md:text-6xl">
+            电影购票 APP<br>
+            <span class="bg-gradient-to-r from-bluex-600 to-bluex-900 bg-clip-text text-transparent">产品设计与开发 Demo</span>
+          </h1>
+
+          <p class="mt-6 max-w-3xl text-lg leading-8 text-slate-600">
+            从用户需求分析到功能落地的课程项目复盘。围绕电影购票场景，展示影片浏览、影院查询、场次选择、在线购票、活动查看和消息通知等核心能力设计。
+          </p>
+
+          <div class="mt-8 flex flex-wrap gap-3">
+            <span class="rounded-full bg-bluex-50 px-4 py-2 text-sm font-bold text-bluex-700">产品设计</span>
+            <span class="rounded-full bg-bluex-50 px-4 py-2 text-sm font-bold text-bluex-700">APP 原型</span>
+            <span class="rounded-full bg-bluex-50 px-4 py-2 text-sm font-bold text-bluex-700">用户场景</span>
+            <span class="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-700 ring-1 ring-slate-200">MySQL</span>
+            <span class="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-700 ring-1 ring-slate-200">Android Studio</span>
+            <span class="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-700 ring-1 ring-slate-200">团队项目</span>
+          </div>
+
+          <div class="mt-10 flex flex-col gap-4 sm:flex-row">
+            <a href="#overview" class="inline-flex items-center justify-center rounded-2xl bg-bluex-600 px-6 py-3 text-sm font-black text-white shadow-lg shadow-blue-200 transition hover:bg-bluex-700">
+              查看项目复盘
+            </a>
+            <a href="#flow" class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-3 text-sm font-black text-slate-700 transition hover:border-bluex-300 hover:text-bluex-700">
+              查看业务流程
+            </a>
+          </div>
+        </div>
+
+        <!-- Hero phone -->
+        <div class="mx-auto w-full max-w-sm">
+          <div class="phone-shell">
+            <div class="phone-screen">
+              <div class="bg-bluex-600 px-5 pb-6 pt-5 text-white">
+                <div class="mb-5 flex items-center justify-between">
+                  <div>
+                    <p class="text-xs text-bluex-100">MovieGo</p>
+                    <p class="text-xl font-black">电影购票</p>
+                  </div>
+                  <div class="rounded-full bg-white/15 px-3 py-2 text-sm">🔔</div>
+                </div>
+                <div class="rounded-2xl bg-white px-4 py-3 text-sm text-slate-400">🔍 搜索影片、影院、场次</div>
+              </div>
+
+              <div class="space-y-5 p-5">
+                <div class="grid grid-cols-3 gap-3">
+                  <div class="rounded-2xl bg-white p-3 text-center shadow-sm"><div class="text-2xl">🎞️</div><p class="mt-1 text-xs font-bold">热映</p></div>
+                  <div class="rounded-2xl bg-white p-3 text-center shadow-sm"><div class="text-2xl">🏙️</div><p class="mt-1 text-xs font-bold">影院</p></div>
+                  <div class="rounded-2xl bg-white p-3 text-center shadow-sm"><div class="text-2xl">🎁</div><p class="mt-1 text-xs font-bold">活动</p></div>
+                </div>
+
+                <div>
+                  <div class="mb-3 flex items-center justify-between">
+                    <h3 class="font-black text-ink">正在热映</h3>
+                    <span class="text-xs font-bold text-bluex-600">全部</span>
+                  </div>
+
+                  <div class="rounded-3xl bg-white p-4 shadow-sm">
+                    <div class="flex gap-4">
+                      <div class="flex h-24 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-bluex-500 to-slate-900 text-2xl text-white">🎬</div>
+                      <div class="flex-1">
+                        <p class="font-black text-ink">星际旅程</p>
+                        <p class="mt-1 text-xs text-slate-500">科幻 / 冒险 · 128 分钟</p>
+                        <p class="mt-2 text-sm font-black text-amber-500">⭐ 9.1</p>
+                        <button class="mt-3 rounded-full bg-bluex-600 px-4 py-1.5 text-xs font-bold text-white">立即购票</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="rounded-3xl bg-bluex-50 p-4">
+                  <p class="text-sm font-black text-bluex-900">新人观影活动</p>
+                  <p class="mt-1 text-xs text-bluex-700">优惠活动 / 订单提醒 / 消息通知</p>
+                </div>
+
+                <div class="grid grid-cols-4 gap-2 rounded-3xl bg-white p-3 text-center text-xs font-bold text-slate-500 shadow-sm">
+                  <div class="text-bluex-600">首页</div><div>影院</div><div>消息</div><div>我的</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Overview -->
+    <section id="overview" class="px-5 py-16">
+      <div class="mx-auto max-w-7xl">
+        <p class="section-kicker">PROJECT OVERVIEW</p>
+        <h2 class="text-3xl font-black tracking-tight text-ink md:text-4xl">项目概览</h2>
+        <p class="mt-4 max-w-3xl text-slate-600">
+          本作品基于大学课程团队项目整理，强调真实、克制、可复盘，重点展示产品思考过程与技术理解能力。
+        </p>
+
+        <div class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-5">
+          <div class="card p-6">
+            <p class="text-sm font-bold text-muted">项目时间</p>
+            <p class="mt-3 text-xl font-black text-ink">2023.06—2023.07</p>
+          </div>
+          <div class="card p-6">
+            <p class="text-sm font-bold text-muted">项目类型</p>
+            <p class="mt-3 text-xl font-black text-ink">大学课程团队项目</p>
+          </div>
+          <div class="card p-6">
+            <p class="text-sm font-bold text-muted">项目方向</p>
+            <p class="mt-3 text-xl font-black text-ink">移动端电影购票 APP</p>
+          </div>
+          <div class="card p-6 lg:col-span-2">
+            <p class="text-sm font-bold text-muted">我的角色</p>
+            <p class="mt-3 text-xl font-black text-ink">团队成员</p>
+            <p class="mt-2 text-sm leading-6 text-slate-600">参与产品设计、数据抓取、数据库存储、页面布局设计。</p>
+          </div>
+        </div>
+
+        <div class="mt-6 rounded-3xl border border-bluex-100 bg-bluex-50 p-7">
+          <p class="text-sm font-black text-bluex-700">项目目标</p>
+          <p class="mt-3 text-lg leading-8 text-slate-700">
+            围绕电影购票场景，设计一款支持影片浏览、影院查询、在线购票、活动展示和消息通知的移动端 APP。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Needs -->
+    <section id="needs" class="px-5 py-16">
+      <div class="mx-auto max-w-7xl">
+        <p class="section-kicker">USER & NEEDS</p>
+        <h2 class="text-3xl font-black tracking-tight text-ink md:text-4xl">用户场景与需求分析</h2>
+
+        <div class="mt-10 grid gap-6 lg:grid-cols-2">
+          <div class="card p-7">
+            <h3 class="text-xl font-black text-ink">用户核心痛点</h3>
+            <div class="mt-6 space-y-4">
+              <div class="rounded-2xl bg-slate-50 p-4"><b>01 快速查看影片</b><p class="mt-1 text-sm text-slate-600">想快速查看正在热映影片和影片详情。</p></div>
+              <div class="rounded-2xl bg-slate-50 p-4"><b>02 筛选影院场次</b><p class="mt-1 text-sm text-slate-600">想根据位置、时间和票价选择合适影院与场次。</p></div>
+              <div class="rounded-2xl bg-slate-50 p-4"><b>03 完成在线购票</b><p class="mt-1 text-sm text-slate-600">想在线完成选座、购票和订单确认。</p></div>
+              <div class="rounded-2xl bg-slate-50 p-4"><b>04 获取提醒</b><p class="mt-1 text-sm text-slate-600">想及时获取优惠活动和订单消息提醒。</p></div>
+              <div class="rounded-2xl bg-slate-50 p-4"><b>05 管理订单账户</b><p class="mt-1 text-sm text-slate-600">想在个人中心查看订单和账户信息。</p></div>
+            </div>
+          </div>
+
+          <div class="card p-7">
+            <h3 class="text-xl font-black text-ink">对应产品需求</h3>
+            <div class="mt-6 grid gap-4 sm:grid-cols-2">
+              <div class="rounded-2xl border border-bluex-100 bg-bluex-50 p-5"><b class="text-bluex-900">影片信息展示与搜索</b><p class="mt-2 text-sm leading-6 text-bluex-700">影片列表、影片详情、评分信息。</p></div>
+              <div class="rounded-2xl border border-bluex-100 bg-bluex-50 p-5"><b class="text-bluex-900">影院列表与场次查询</b><p class="mt-2 text-sm leading-6 text-bluex-700">影院、距离、时间、票价。</p></div>
+              <div class="rounded-2xl border border-bluex-100 bg-bluex-50 p-5"><b class="text-bluex-900">购票流程与订单确认</b><p class="mt-2 text-sm leading-6 text-bluex-700">场次、座位、订单确认。</p></div>
+              <div class="rounded-2xl border border-bluex-100 bg-bluex-50 p-5"><b class="text-bluex-900">活动模块与优惠信息</b><p class="mt-2 text-sm leading-6 text-bluex-700">活动入口、活动详情。</p></div>
+              <div class="rounded-2xl border border-bluex-100 bg-bluex-50 p-5"><b class="text-bluex-900">消息通知与订单提醒</b><p class="mt-2 text-sm leading-6 text-bluex-700">系统通知、订单提醒。</p></div>
+              <div class="rounded-2xl border border-bluex-100 bg-bluex-50 p-5"><b class="text-bluex-900">用户登录注册与个人中心</b><p class="mt-2 text-sm leading-6 text-bluex-700">账户信息、订单记录。</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Structure -->
+    <section id="structure" class="px-5 py-16">
+      <div class="mx-auto max-w-7xl">
+        <p class="section-kicker">FUNCTION STRUCTURE</p>
+        <h2 class="text-3xl font-black tracking-tight text-ink md:text-4xl">功能结构设计</h2>
+        <p class="mt-4 max-w-3xl text-slate-600">点击模块卡片可查看对应说明。</p>
+
+        <div class="mt-10 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-soft md:p-10">
+          <div class="mx-auto mb-8 max-w-md rounded-3xl bg-gradient-to-r from-bluex-600 to-bluex-900 px-6 py-5 text-center text-white">
+            <p class="text-sm text-bluex-100">Product Architecture</p>
+            <h3 class="mt-1 text-2xl font-black">电影购票 APP</h3>
+          </div>
+
+          <div id="moduleGrid" class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            <button data-module="用户模块：登录注册、个人信息、订单记录，承接用户账户与历史订单管理。" class="module card p-6 text-left">
+              <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-bluex-600 text-xl text-white">👤</div>
+              <h4 class="text-lg font-black text-ink">用户模块</h4>
+              <p class="mt-2 text-sm leading-6 text-slate-600">登录注册、个人信息、订单记录。</p>
+            </button>
+            <button data-module="影院模块：展示影院列表、影院详情、场次信息，帮助用户选择合适观影地点。" class="module card p-6 text-left">
+              <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-bluex-600 text-xl text-white">🏙️</div>
+              <h4 class="text-lg font-black text-ink">影院模块</h4>
+              <p class="mt-2 text-sm leading-6 text-slate-600">影院列表、影院详情、场次信息。</p>
+            </button>
+            <button data-module="影片模块：提供影片列表、影片详情、评分信息，是用户购票决策的主要信息入口。" class="module card p-6 text-left">
+              <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-bluex-600 text-xl text-white">🎞️</div>
+              <h4 class="text-lg font-black text-ink">影片模块</h4>
+              <p class="mt-2 text-sm leading-6 text-slate-600">影片列表、影片详情、评分信息。</p>
+            </button>
+            <button data-module="购票模块：覆盖场次选择、座位选择、订单确认，是核心业务闭环。" class="module card p-6 text-left">
+              <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-bluex-600 text-xl text-white">🎟️</div>
+              <h4 class="text-lg font-black text-ink">购票模块</h4>
+              <p class="mt-2 text-sm leading-6 text-slate-600">场次选择、座位选择、订单确认。</p>
+            </button>
+            <button data-module="活动模块：提供优惠活动和活动详情，作为运营信息展示入口。" class="module card p-6 text-left">
+              <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-bluex-600 text-xl text-white">🎁</div>
+              <h4 class="text-lg font-black text-ink">活动模块</h4>
+              <p class="mt-2 text-sm leading-6 text-slate-600">优惠活动、活动详情。</p>
+            </button>
+            <button data-module="消息模块：提供系统通知、订单提醒、活动提醒，增强订单状态反馈。" class="module card p-6 text-left">
+              <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-bluex-600 text-xl text-white">🔔</div>
+              <h4 class="text-lg font-black text-ink">消息模块</h4>
+              <p class="mt-2 text-sm leading-6 text-slate-600">系统通知、订单提醒、活动提醒。</p>
+            </button>
+          </div>
+
+          <div class="mt-8 rounded-3xl bg-bluex-50 p-6">
+            <p class="text-sm font-black text-bluex-800">模块说明</p>
+            <p id="moduleDesc" class="mt-2 text-sm leading-7 text-bluex-700">
+              用户从首页进入影片或影院模块，选择影片、影院与场次后进入购票模块；购票完成后，订单信息沉淀到用户模块，并通过消息模块形成提醒。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Flow -->
+    <section id="flow" class="px-5 py-16">
+      <div class="mx-auto max-w-7xl">
+        <p class="section-kicker">CORE FLOW</p>
+        <h2 class="text-3xl font-black tracking-tight text-ink md:text-4xl">核心业务流程</h2>
+        <p class="mt-4 max-w-3xl text-slate-600">横向流程图展示完整购票路径，点击节点可高亮。</p>
+
+        <div class="mt-10 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-soft">
+          <div class="hide-scroll overflow-x-auto pb-4">
+            <div class="flex min-w-[1120px] items-start gap-3">
+              <div class="flow-step active w-28 cursor-pointer rounded-2xl border border-bluex-200 bg-white p-4 text-center transition"><div class="text-2xl">🏠</div><b class="mt-2 block text-sm">进入首页</b><p class="mt-2 text-xs opacity-80">查看入口</p></div>
+              <div class="mt-11 text-bluex-300">→</div>
+              <div class="flow-step w-28 cursor-pointer rounded-2xl border border-bluex-200 bg-white p-4 text-center transition"><div class="text-2xl">🎞️</div><b class="mt-2 block text-sm">浏览影片</b><p class="mt-2 text-xs opacity-80">查看热映</p></div>
+              <div class="mt-11 text-bluex-300">→</div>
+              <div class="flow-step w-28 cursor-pointer rounded-2xl border border-bluex-200 bg-white p-4 text-center transition"><div class="text-2xl">📄</div><b class="mt-2 block text-sm">影片详情</b><p class="mt-2 text-xs opacity-80">了解信息</p></div>
+              <div class="mt-11 text-bluex-300">→</div>
+              <div class="flow-step w-28 cursor-pointer rounded-2xl border border-bluex-200 bg-white p-4 text-center transition"><div class="text-2xl">🏙️</div><b class="mt-2 block text-sm">选择影院</b><p class="mt-2 text-xs opacity-80">对比距离</p></div>
+              <div class="mt-11 text-bluex-300">→</div>
+              <div class="flow-step w-28 cursor-pointer rounded-2xl border border-bluex-200 bg-white p-4 text-center transition"><div class="text-2xl">🕒</div><b class="mt-2 block text-sm">选择场次</b><p class="mt-2 text-xs opacity-80">时间票价</p></div>
+              <div class="mt-11 text-bluex-300">→</div>
+              <div class="flow-step w-28 cursor-pointer rounded-2xl border border-bluex-200 bg-white p-4 text-center transition"><div class="text-2xl">💺</div><b class="mt-2 block text-sm">选择座位</b><p class="mt-2 text-xs opacity-80">确认座位</p></div>
+              <div class="mt-11 text-bluex-300">→</div>
+              <div class="flow-step w-28 cursor-pointer rounded-2xl border border-bluex-200 bg-white p-4 text-center transition"><div class="text-2xl">🧾</div><b class="mt-2 block text-sm">确认订单</b><p class="mt-2 text-xs opacity-80">核对信息</p></div>
+              <div class="mt-11 text-bluex-300">→</div>
+              <div class="flow-step w-28 cursor-pointer rounded-2xl border border-bluex-200 bg-white p-4 text-center transition"><div class="text-2xl">✅</div><b class="mt-2 block text-sm">完成购票</b><p class="mt-2 text-xs opacity-80">生成订单</p></div>
+              <div class="mt-11 text-bluex-300">→</div>
+              <div class="flow-step w-28 cursor-pointer rounded-2xl border border-bluex-200 bg-white p-4 text-center transition"><div class="text-2xl">🔔</div><b class="mt-2 block text-sm">消息提醒</b><p class="mt-2 text-xs opacity-80">状态反馈</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Prototype -->
+    <section id="prototype" class="px-5 py-16">
+      <div class="mx-auto max-w-7xl">
+        <p class="section-kicker">PROTOTYPE</p>
+        <h2 class="text-3xl font-black tracking-tight text-ink md:text-4xl">核心页面原型展示</h2>
+        <p class="mt-4 max-w-3xl text-slate-600">通过中低保真手机界面模拟首页、影片详情、影院选择、购票确认和个人中心页面。</p>
+
+        <div class="mt-10 grid items-start gap-8 lg:grid-cols-[.9fr_1.1fr]">
+          <div class="card p-6">
+            <div class="grid gap-3 sm:grid-cols-2">
+              <button class="tab active rounded-2xl border border-slate-200 px-4 py-3 text-left text-sm font-black transition" data-screen="home">首页</button>
+              <button class="tab rounded-2xl border border-slate-200 px-4 py-3 text-left text-sm font-black transition" data-screen="movie">影片详情页</button>
+              <button class="tab rounded-2xl border border-slate-200 px-4 py-3 text-left text-sm font-black transition" data-screen="cinema">影院选择页</button>
+              <button class="tab rounded-2xl border border-slate-200 px-4 py-3 text-left text-sm font-black transition" data-screen="order">购票确认页</button>
+              <button class="tab rounded-2xl border border-slate-200 px-4 py-3 text-left text-sm font-black transition sm:col-span-2" data-screen="profile">个人中心页</button>
+            </div>
+
+            <div class="mt-7 rounded-3xl bg-bluex-50 p-6">
+              <p class="text-sm font-black text-bluex-800">页面说明</p>
+              <p id="screenDesc" class="mt-2 text-sm leading-7 text-bluex-700"></p>
+            </div>
+          </div>
+
+          <div class="mx-auto w-full max-w-sm">
+            <div class="phone-shell">
+              <div id="prototypeScreen" class="phone-screen"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tech -->
+    <section id="tech" class="px-5 py-16">
+      <div class="mx-auto max-w-7xl">
+        <p class="section-kicker">DATA & TECH</p>
+        <h2 class="text-3xl font-black tracking-tight text-ink md:text-4xl">数据与技术实现</h2>
+
+        <div class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          <div class="card p-6"><div class="text-2xl">🧹</div><h3 class="mt-4 font-black">数据抓取与整理</h3><p class="mt-2 text-sm leading-6 text-slate-600">参与数据抓取与基础数据整理。</p></div>
+          <div class="card p-6"><div class="text-2xl">🗄️</div><h3 class="mt-4 font-black">MySQL 数据存储</h3><p class="mt-2 text-sm leading-6 text-slate-600">进行数据存储与查询支持。</p></div>
+          <div class="card p-6"><div class="text-2xl">📱</div><h3 class="mt-4 font-black">页面布局实现</h3><p class="mt-2 text-sm leading-6 text-slate-600">参与部分页面布局与功能实现。</p></div>
+          <div class="card p-6"><div class="text-2xl">🛠️</div><h3 class="mt-4 font-black">Android Studio</h3><p class="mt-2 text-sm leading-6 text-slate-600">团队完成移动端项目开发。</p></div>
+        </div>
+
+        <div class="mt-8 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-soft">
+          <h3 class="mb-6 text-xl font-black">数据表格示意</h3>
+          <div class="hide-scroll overflow-x-auto">
+            <table class="w-full min-w-[900px] text-left text-sm">
+              <thead>
+                <tr class="bg-bluex-600 text-white">
+                  <th class="rounded-l-2xl px-5 py-4">数据表</th>
+                  <th class="px-5 py-4">字段</th>
+                  <th class="rounded-r-2xl px-5 py-4">用途说明</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr class="bg-bluex-50/60"><td class="px-5 py-4 font-black text-bluex-900">影片表 movie</td><td class="px-5 py-4 font-mono">movie_id、movie_name、type、score、duration</td><td class="px-5 py-4 text-slate-600">存储影片名称、类型、评分、时长。</td></tr>
+                <tr><td class="px-5 py-4 font-black text-bluex-900">影院表 cinema</td><td class="px-5 py-4 font-mono">cinema_id、cinema_name、location</td><td class="px-5 py-4 text-slate-600">存储影院名称和位置信息。</td></tr>
+                <tr class="bg-bluex-50/60"><td class="px-5 py-4 font-black text-bluex-900">场次表 schedule</td><td class="px-5 py-4 font-mono">schedule_id、movie_id、cinema_id、time、price</td><td class="px-5 py-4 text-slate-600">关联影片、影院、放映时间和价格。</td></tr>
+                <tr><td class="px-5 py-4 font-black text-bluex-900">订单表 order</td><td class="px-5 py-4 font-mono">order_id、user_id、movie_id、cinema_id、seat、price</td><td class="px-5 py-4 text-slate-600">记录用户订单、座位和价格。</td></tr>
+                <tr class="bg-bluex-50/60"><td class="px-5 py-4 font-black text-bluex-900">用户表 user</td><td class="px-5 py-4 font-mono">user_id、username、phone、order_history</td><td class="px-5 py-4 text-slate-600">存储用户基础信息和订单记录。</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Duties & Gains -->
+    <section class="px-5 py-16">
+      <div class="mx-auto max-w-7xl">
+        <p class="section-kicker">ROLE & OUTCOME</p>
+        <h2 class="text-3xl font-black tracking-tight text-ink md:text-4xl">我的职责与项目收获</h2>
+
+        <div class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div class="card p-6"><h3 class="font-black">01 用户需求分析</h3><p class="mt-3 text-sm leading-7 text-slate-600">参与电影购票场景下的用户需求分析和功能规划。</p></div>
+          <div class="card p-6"><h3 class="font-black">02 核心模块设计</h3><p class="mt-3 text-sm leading-7 text-slate-600">参与用户、影院、影片、购票、活动和消息模块设计。</p></div>
+          <div class="card p-6"><h3 class="font-black">03 数据抓取与管理</h3><p class="mt-3 text-sm leading-7 text-slate-600">负责部分数据抓取、数据管理与 MySQL 数据存储。</p></div>
+          <div class="card p-6"><h3 class="font-black">04 页面布局与交互</h3><p class="mt-3 text-sm leading-7 text-slate-600">参与部分页面布局和交互设计。</p></div>
+          <div class="card p-6"><h3 class="font-black">05 项目开发协作</h3><p class="mt-3 text-sm leading-7 text-slate-600">配合团队使用 Android Studio 完成项目开发。</p></div>
+          <div class="card p-6"><h3 class="font-black">06 能力提升</h3><p class="mt-3 text-sm leading-7 text-slate-600">提升产品设计、技术理解和团队协作能力。</p></div>
+        </div>
+
+        <div class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-3xl border border-bluex-100 bg-bluex-50 p-6"><b class="text-bluex-950">产品流程理解</b><p class="mt-3 text-sm leading-7 text-bluex-800">理解从需求分析到功能落地的完整流程。</p></div>
+          <div class="rounded-3xl border border-bluex-100 bg-bluex-50 p-6"><b class="text-bluex-950">功能拆解能力</b><p class="mt-3 text-sm leading-7 text-bluex-800">提升用户场景分析和功能拆解能力。</p></div>
+          <div class="rounded-3xl border border-bluex-100 bg-bluex-50 p-6"><b class="text-bluex-950">数据技术理解</b><p class="mt-3 text-sm leading-7 text-bluex-800">提升数据库设计、数据处理和技术沟通能力。</p></div>
+          <div class="rounded-3xl border border-bluex-100 bg-bluex-50 p-6"><b class="text-bluex-950">项目复盘能力</b><p class="mt-3 text-sm leading-7 text-bluex-800">提升团队协作、项目推进和产品复盘能力。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="px-5 pb-10 pt-16">
+      <div class="mx-auto max-w-7xl rounded-[2rem] bg-slate-950 p-8 text-white md:p-12">
+        <p class="text-sm font-black text-bluex-200">Portfolio Summary</p>
+        <h2 class="mt-3 text-2xl font-black md:text-3xl">电影购票 APP 产品设计与开发 Demo</h2>
+        <p class="mt-5 max-w-4xl text-sm leading-7 text-slate-300 md:text-base">
+          该作品为基于课程团队项目整理的产品设计与开发 Demo，主要用于展示本人在产品分析、功能规划、页面原型、数据处理和技术协作方面的能力。
+        </p>
+        <p class="mt-4 max-w-4xl text-sm leading-7 text-slate-400">
+          本作品基于课程团队项目整理，用于展示产品分析、功能规划、原型设计、数据处理与项目复盘能力。
+        </p>
+      </div>
+    </footer>
+  </main>
+
+  <button id="toTop" aria-label="返回顶部" class="fixed bottom-6 right-6 hidden h-12 w-12 items-center justify-center rounded-full bg-bluex-600 text-white shadow-lg transition hover:bg-bluex-700">↑</button>
+
+  <script>
+    const screens = {
+      home: {
+        desc: "首页承载搜索、热映影片、活动入口和消息入口，是用户进入购票流程的主要入口页面。",
+        html: `
+          <div class="bg-bluex-600 px-5 pb-6 pt-5 text-white">
+            <div class="flex items-center justify-between"><div><p class="text-xs text-bluex-100">首页</p><h3 class="text-xl font-black">电影购票</h3></div><div class="rounded-full bg-white/15 px-3 py-2 text-sm">🔔</div></div>
+            <div class="mt-5 rounded-2xl bg-white px-4 py-3 text-sm text-slate-400">🔍 搜索影片 / 影院</div>
+          </div>
+          <div class="space-y-5 p-5">
+            <div class="grid grid-cols-3 gap-3">
+              <div class="rounded-2xl bg-white p-3 text-center shadow-sm"><div class="text-2xl">🎞️</div><p class="mt-1 text-xs font-bold">热映</p></div>
+              <div class="rounded-2xl bg-white p-3 text-center shadow-sm"><div class="text-2xl">🏙️</div><p class="mt-1 text-xs font-bold">影院</p></div>
+              <div class="rounded-2xl bg-white p-3 text-center shadow-sm"><div class="text-2xl">🎁</div><p class="mt-1 text-xs font-bold">活动</p></div>
+            </div>
+            <div class="rounded-3xl bg-white p-4 shadow-sm">
+              <div class="flex gap-4">
+                <div class="h-24 w-16 rounded-2xl bg-gradient-to-br from-bluex-500 to-slate-900"></div>
+                <div><p class="font-black">星际旅程</p><p class="mt-1 text-xs text-slate-500">科幻 / 冒险 / 128 分钟</p><p class="mt-2 text-sm font-bold text-amber-500">⭐ 9.1</p><button class="mt-3 rounded-full bg-bluex-600 px-4 py-1.5 text-xs font-bold text-white">立即购票</button></div>
+              </div>
+            </div>
+            <div class="rounded-3xl bg-bluex-50 p-4"><p class="text-sm font-black text-bluex-900">优惠活动</p><p class="mt-1 text-xs text-bluex-700">新人观影优惠 / 限时活动提醒</p></div>
+          </div>`
+      },
+      movie: {
+        desc: "影片详情页帮助用户了解影片名称、评分、简介和场次入口，并引导进入影院选择。",
+        html: `
+          <div class="bg-slate-900 px-5 pb-8 pt-5 text-white"><div class="mb-6 flex items-center justify-between"><span>←</span><span class="text-sm font-bold">影片详情</span><span>♡</span></div><div class="mx-auto h-52 w-36 rounded-3xl bg-gradient-to-br from-bluex-500 to-slate-800 shadow-lg"></div></div>
+          <div class="-mt-5 rounded-t-[2rem] bg-slate-50 p-5"><h3 class="text-2xl font-black">星际旅程</h3><div class="mt-2 flex items-center gap-3 text-sm"><span class="font-bold text-amber-500">⭐ 9.1</span><span class="text-slate-400">科幻 / 冒险</span></div><div class="mt-5 rounded-3xl bg-white p-4 shadow-sm"><p class="text-sm font-bold">影片简介</p><p class="mt-2 text-xs leading-6 text-slate-500">展示影片简介、类型、评分、时长等信息，帮助用户完成购票决策。</p></div><button class="mt-6 w-full rounded-2xl bg-bluex-600 py-3 text-sm font-black text-white">选择影院购票</button></div>`
+      },
+      cinema: {
+        desc: "影院选择页展示影院列表、距离、场次和票价，帮助用户完成影院与场次选择。",
+        html: `
+          <div class="bg-bluex-600 px-5 pb-5 pt-5 text-white"><div class="flex items-center justify-between"><span>←</span><span class="font-bold">选择影院</span><span>筛选</span></div><div class="mt-5 rounded-2xl bg-white/15 px-4 py-3 text-sm">当前影片：星际旅程</div></div>
+          <div class="space-y-4 p-5">
+            <div class="rounded-3xl bg-white p-5 shadow-sm"><div class="flex justify-between"><div><p class="font-black">万象影城</p><p class="mt-1 text-xs text-slate-500">距你 1.8km · 市中心商圈</p></div><span class="text-sm font-bold text-bluex-600">¥39起</span></div><div class="mt-4 flex gap-2"><button class="rounded-full bg-bluex-600 px-4 py-2 text-xs font-bold text-white">13:30</button><button class="rounded-full bg-bluex-50 px-4 py-2 text-xs font-bold text-bluex-700">16:20</button><button class="rounded-full bg-bluex-50 px-4 py-2 text-xs font-bold text-bluex-700">20:10</button></div></div>
+            <div class="rounded-3xl bg-white p-5 shadow-sm"><p class="font-black">星光国际影城</p><p class="mt-1 text-xs text-slate-500">距你 3.2km · 今日 4 场</p></div>
+          </div>`
+      },
+      order: {
+        desc: "购票确认页用于集中展示影片、影院、时间、座位和价格，降低下单错误。",
+        html: `
+          <div class="bg-bluex-600 px-5 pb-6 pt-5 text-white"><div class="flex items-center justify-between"><span>←</span><span class="font-bold">确认订单</span><span></span></div></div>
+          <div class="space-y-4 p-5"><div class="rounded-3xl bg-white p-5 shadow-sm"><p class="text-sm font-bold text-slate-500">影片</p><p class="mt-1 text-xl font-black">星际旅程</p><p class="mt-2 text-sm text-slate-500">万象影城 · 3号厅</p></div><div class="rounded-3xl bg-white p-5 shadow-sm"><div class="grid grid-cols-2 gap-4 text-sm"><div><p class="text-slate-400">时间</p><p class="mt-1 font-bold">今天 20:10</p></div><div><p class="text-slate-400">座位</p><p class="mt-1 font-bold">5排 8座</p></div><div><p class="text-slate-400">票数</p><p class="mt-1 font-bold">1 张</p></div><div><p class="text-slate-400">价格</p><p class="mt-1 font-bold text-bluex-600">¥39</p></div></div></div><button class="w-full rounded-2xl bg-bluex-600 py-3 text-sm font-black text-white">确认购票</button></div>`
+      },
+      profile: {
+        desc: "个人中心页用于查看个人信息、我的订单、消息通知和优惠活动。",
+        html: `
+          <div class="bg-bluex-600 px-5 pb-8 pt-5 text-white"><div class="flex items-center justify-between"><span class="font-bold">个人中心</span><span>设置</span></div><div class="mt-6 flex items-center gap-4"><div class="flex h-16 w-16 items-center justify-center rounded-full bg-white/20 text-2xl">👤</div><div><p class="text-xl font-black">用户昵称</p><p class="mt-1 text-xs text-bluex-100">手机号：138****0000</p></div></div></div>
+          <div class="-mt-4 space-y-4 p-5"><div class="grid grid-cols-3 gap-3"><div class="rounded-2xl bg-white p-4 text-center shadow-sm"><div class="text-2xl">🧾</div><p class="mt-1 text-xs font-bold">我的订单</p></div><div class="rounded-2xl bg-white p-4 text-center shadow-sm"><div class="text-2xl">🔔</div><p class="mt-1 text-xs font-bold">消息通知</p></div><div class="rounded-2xl bg-white p-4 text-center shadow-sm"><div class="text-2xl">🎁</div><p class="mt-1 text-xs font-bold">优惠活动</p></div></div><div class="rounded-3xl bg-white p-5 shadow-sm"><p class="font-black">最近订单</p><div class="mt-4 rounded-2xl bg-slate-50 p-4"><p class="text-sm font-bold">星际旅程</p><p class="mt-1 text-xs text-slate-500">今天 20:10 · 已出票</p></div></div></div>`
+      }
+    };
+
+    const prototypeScreen = document.getElementById('prototypeScreen');
+    const screenDesc = document.getElementById('screenDesc');
+    const tabs = document.querySelectorAll('.tab');
+
+    function renderScreen(name) {
+      prototypeScreen.innerHTML = screens[name].html;
+      screenDesc.textContent = screens[name].desc;
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.screen === name));
+    }
+    tabs.forEach(t => t.addEventListener('click', () => renderScreen(t.dataset.screen)));
+    renderScreen('home');
+
+    const moduleDesc = document.getElementById('moduleDesc');
+    document.querySelectorAll('.module').forEach(m => {
+      m.addEventListener('click', () => {
+        document.querySelectorAll('.module').forEach(x => x.classList.remove('active'));
+        m.classList.add('active');
+        moduleDesc.textContent = m.dataset.module;
+      });
+    });
+
+    document.querySelectorAll('.flow-step').forEach(s => {
+      s.addEventListener('click', () => {
+        document.querySelectorAll('.flow-step').forEach(x => x.classList.remove('active'));
+        s.classList.add('active');
+      });
+    });
+
+    const toTop = document.getElementById('toTop');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 520) {
+        toTop.classList.remove('hidden');
+        toTop.classList.add('flex');
+      } else {
+        toTop.classList.add('hidden');
+        toTop.classList.remove('flex');
+      }
+    });
+    toTop.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
+  </script>
+</body>
+</html>
